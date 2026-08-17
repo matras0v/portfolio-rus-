@@ -222,7 +222,8 @@
     white-space: pre-line;
   }
   .story-visual {
-    position: relative;
+    position: sticky;
+    top: 120px;
     height: 620px;
     overflow: hidden;
     background: #0d0d0b;
@@ -237,6 +238,7 @@
   .story-visual img.active { opacity: 1; transform: scale(1); }
   .story-triggers { display: flex; flex-direction: column; gap: 40vh; padding-top: 10vh; padding-bottom: 10vh; }
   .story-trigger { height: 1px; }
+  .story-stacked { display: none; }
 
   /* ---------- menu ---------- */
   .menu-list { list-style: none; border-top: 1px solid var(--line); max-width: 62ch; }
@@ -282,6 +284,54 @@
     margin-bottom: 14px;
     display: block;
   }
+  .cal { max-width: 360px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .cal-title { font-family: var(--serif); font-size: 1.25rem; text-transform: capitalize; }
+  .cal-nav {
+    -webkit-appearance: none; appearance: none;
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--line);
+    width: 34px; height: 34px;
+    font-family: var(--sans);
+    font-size: 15px;
+    cursor: pointer;
+    transition: background .18s, border-color .18s, opacity .18s;
+  }
+  .cal-nav:hover { border-color: var(--champagne); }
+  .cal-nav:disabled { opacity: .3; cursor: default; }
+  .cal-nav:disabled:hover { border-color: var(--line); }
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 6px;
+  }
+  .cal-weekdays span {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day {
+    -webkit-appearance: none; appearance: none;
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid transparent;
+    aspect-ratio: 1;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: background .18s, border-color .18s, color .18s;
+  }
+  .cal-day:hover { border-color: var(--line); }
+  .cal-day.active { background: var(--champagne); border-color: var(--champagne); color: var(--black); }
+  .cal-day:disabled { color: var(--stone); opacity: .35; cursor: default; }
+  .cal-day:disabled:hover { border-color: transparent; }
+  .cal-day.empty { visibility: hidden; cursor: default; }
+
   .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
   .pill {
     -webkit-appearance: none; appearance: none;
@@ -362,8 +412,11 @@
   }
 
   @media (max-width: 900px) {
-    .story-grid { grid-template-columns: 1fr; }
-    .story-sticky { position: static; margin-bottom: 32px; }
+    .story-grid { display: none; }
+    .story-stacked { display: flex; flex-direction: column; gap: 56px; }
+    .story-stacked .story-visual { position: relative; height: 340px; }
+    .story-stacked .story-visual img { position: static; width: 100%; height: 100%; object-fit: cover; opacity: 1; transform: none; transition: none; }
+    .story-stacked .story-line { font-family: var(--serif); font-size: clamp(1.5rem, 5vw, 2rem); line-height: 1.24; margin-top: 22px; }
     .story-visual { height: 420px; }
     .gallery-grid { grid-template-columns: 1fr 1fr; }
   }
@@ -441,6 +494,21 @@
         </div>
       </div>
     </div>
+
+    <div class="story-stacked">
+      <div class="story-stacked-item reveal">
+        <div class="story-visual"><img src="img/room.jpg" alt="Атмосфера зала" width="1200" height="800"></div>
+        <div class="story-line">Сначала атмосфера.<br>Потом первый курс.</div>
+      </div>
+      <div class="story-stacked-item reveal">
+        <div class="story-visual"><img src="img/pour.jpg" alt="Блюдо крупным планом" width="1200" height="1200"></div>
+        <div class="story-line">Подача — часть<br>разговора за столом.</div>
+      </div>
+      <div class="story-stacked-item reveal">
+        <div class="story-visual"><img src="img/glass.jpg" alt="Стол, вино, вечер" width="900" height="1200"></div>
+        <div class="story-line">Дальше — вино<br>и время без спешки.</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -478,24 +546,36 @@
     <div class="booking-box reveal">
       <div class="booking-group">
         <span class="glabel">Дата</span>
-        <div class="pill-row" data-group="date">
-          <button class="pill" data-value="Сегодня">Сегодня</button>
-          <button class="pill" data-value="Завтра">Завтра</button>
-          <button class="pill" data-value="Пятница">Пт</button>
-          <button class="pill" data-value="Суббота">Сб</button>
+        <div class="cal" id="cal">
+          <div class="cal-head">
+            <button type="button" class="cal-nav" id="calPrev" aria-label="Предыдущий месяц">←</button>
+            <span class="cal-title" id="calTitle"></span>
+            <button type="button" class="cal-nav" id="calNext" aria-label="Следующий месяц">→</button>
+          </div>
+          <div class="cal-weekdays">
+            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
         </div>
       </div>
       <div class="booking-group">
         <span class="glabel">Время</span>
         <div class="pill-row" data-group="time">
+          <button class="pill" data-value="18:00">18:00</button>
           <button class="pill" data-value="18:30">18:30</button>
+          <button class="pill" data-value="19:00">19:00</button>
+          <button class="pill" data-value="19:30">19:30</button>
           <button class="pill" data-value="20:00">20:00</button>
+          <button class="pill" data-value="20:30">20:30</button>
+          <button class="pill" data-value="21:00">21:00</button>
           <button class="pill" data-value="21:30">21:30</button>
+          <button class="pill" data-value="22:00">22:00</button>
         </div>
       </div>
       <div class="booking-group">
         <span class="glabel">Гости</span>
         <div class="pill-row" data-group="guests">
+          <button class="pill" data-value="1">1</button>
           <button class="pill" data-value="2">2</button>
           <button class="pill" data-value="3">3</button>
           <button class="pill" data-value="4">4</button>
@@ -625,7 +705,7 @@
   }
 
   // booking demo
-  var selections = { date: null, time: null, guests: null };
+  var selections = { dateObj: null, dateLabel: null, time: null, guests: null };
   var resultEl = document.getElementById('bookingResult');
   document.querySelectorAll('.pill-row').forEach(function (row) {
     var group = row.getAttribute('data-group');
@@ -638,12 +718,84 @@
       });
     });
   });
+
+  // mini calendar
+  var MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  var MONTH_TITLES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var maxDate = new Date(today); maxDate.setDate(maxDate.getDate() + 45);
+  var viewYear = today.getFullYear();
+  var viewMonth = today.getMonth();
+  var calGrid = document.getElementById('calGrid');
+  var calTitle = document.getElementById('calTitle');
+  var calPrev = document.getElementById('calPrev');
+  var calNext = document.getElementById('calNext');
+
+  function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+
+  function renderCalendar() {
+    calGrid.innerHTML = '';
+    calTitle.textContent = MONTH_TITLES[viewMonth] + ' ' + viewYear;
+
+    var firstOfMonth = new Date(viewYear, viewMonth, 1);
+    var startOffset = (firstOfMonth.getDay() + 6) % 7; // Monday-first
+    var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    for (var i = 0; i < startOffset; i++) {
+      var empty = document.createElement('span');
+      empty.className = 'cal-day empty';
+      calGrid.appendChild(empty);
+    }
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateObj = new Date(viewYear, viewMonth, d);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day';
+      btn.textContent = d;
+      var disabled = dateObj < today || dateObj > maxDate;
+      if (disabled) { btn.disabled = true; }
+      if (selections.dateObj && sameDay(dateObj, selections.dateObj)) { btn.classList.add('active'); }
+      if (!disabled) {
+        btn.addEventListener('click', function (dObj) {
+          return function () {
+            selections.dateObj = dObj;
+            var isToday = sameDay(dObj, today);
+            var tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
+            var isTomorrow = sameDay(dObj, tomorrow);
+            selections.dateLabel = isToday ? 'сегодня' : isTomorrow ? 'завтра' : dObj.getDate() + ' ' + MONTHS[dObj.getMonth()];
+            renderCalendar();
+            updateSummary();
+          };
+        }(dateObj));
+      }
+      calGrid.appendChild(btn);
+    }
+
+    calPrev.disabled = (viewYear === today.getFullYear() && viewMonth === today.getMonth());
+    var maxMonth = maxDate.getFullYear() * 12 + maxDate.getMonth();
+    var viewedMonth = viewYear * 12 + viewMonth;
+    calNext.disabled = viewedMonth >= maxMonth;
+  }
+
+  calPrev.addEventListener('click', function () {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    renderCalendar();
+  });
+  calNext.addEventListener('click', function () {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    renderCalendar();
+  });
+  renderCalendar();
+
   function updateSummary() {
-    if (selections.date && selections.time && selections.guests) {
-      var guestsWord = selections.guests === '2' ? 'двоих' : selections.guests + (selections.guests === '5+' ? '' : ' человек');
-      resultEl.textContent = 'Стол на ' + guestsWord + ' · ' + selections.date.toLowerCase() + ', ' + selections.time;
+    if (selections.dateLabel && selections.time && selections.guests) {
+      var guestsWord = selections.guests === '1' ? 'одного' : selections.guests === '2' ? 'двоих' : selections.guests + (selections.guests === '5+' ? '' : ' человек');
+      resultEl.textContent = 'Стол на ' + guestsWord + ' · ' + selections.dateLabel + ', ' + selections.time;
     } else {
-      var picked = [selections.date, selections.time, selections.guests].filter(Boolean).length;
+      var picked = [selections.dateLabel, selections.time, selections.guests].filter(Boolean).length;
       resultEl.textContent = picked === 0 ? 'Выберите дату, время и число гостей' : 'Осталось выбрать ещё немного…';
     }
   }
