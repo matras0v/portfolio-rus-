@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вадим Иванченко — веб-дизайнер и frontend-разработчик</title>
+<meta name="description" content="Проектирую и собираю сайты, интерфейсы и небольшие digital-продукты — от структуры и дизайна до рабочей версии в браузере. Ростов-на-Дону · удалённо.">
+<meta property="og:title" content="Вадим Иванченко — веб-дизайнер и frontend-разработчик">
+<meta property="og:description" content="Лендинги, сайты услуг, интерфейсы и небольшие digital-продукты. От структуры и дизайна до рабочей версии в браузере.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2314140F'/%3E%3Ctext x='50' y='68' font-family='Arial,sans-serif' font-size='58' font-weight='800' fill='%23EDECE8' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #EDECE8;
+    --ink: #14140F;
+    --muted: #6B6A62;
+    --line: #C9C7BF;
+    --card: #F6F5F2;
+    --accent: #14140F;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; display: block; }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- reveal ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ---------- header ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    background: rgba(237,236,232,.88);
+    backdrop-filter: saturate(140%) blur(8px);
+  }
+  .head-row { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
+  .brand {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  nav { display: flex; align-items: center; gap: 26px; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    transition: color .18s;
+  }
+  nav a:hover, nav a:focus-visible { color: var(--ink); }
+  .nav-cta {
+    border: 1px solid var(--ink);
+    padding: 9px 16px;
+    color: var(--ink) !important;
+  }
+  .nav-cta:hover { background: var(--ink); color: var(--bg) !important; }
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 88px 0 84px; }
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 26px;
+  }
+  .hero-eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3F8F5C;
+    flex: none;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 5.6vw, 4.3rem);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    max-width: 20ch;
+  }
+  .lede {
+    margin-top: 26px;
+    font-size: clamp(1.05rem, 1.7vw, 1.24rem);
+    line-height: 1.55;
+    max-width: 50ch;
+    color: #2E2D26;
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 38px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 26px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    transition: background .18s, color .18s, transform .18s;
+  }
+  .btn-solid { background: var(--ink); color: var(--bg); }
+  .btn-solid:hover { transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--ink); }
+  .btn-outline:hover { background: var(--ink); color: var(--bg); }
+  .meta {
+    margin-top: 46px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 88px 0; border-top: 1px solid var(--line); }
+  .kicker {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 30px;
+  }
+  h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    margin-bottom: 16px;
+  }
+  .section-intro { max-width: 56ch; color: #2E2D26; margin-bottom: 52px; }
+
+  /* ---------- case previews ---------- */
+  .cases { display: flex; flex-direction: column; gap: 22px; }
+
+  .case {
+    background: var(--card);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .case-feature { display: grid; grid-template-columns: 1.15fr 1fr; }
+  .case-feature-reverse { grid-template-columns: 1fr 1.15fr; }
+  .case-media {
+    position: relative;
+    background: #0E0D0C;
+    overflow: hidden;
+  }
+  .case-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 78%;
+    transition: transform .6s cubic-bezier(.2,.7,.3,1);
+  }
+  .case-media img[src*="motorefine-hero"] { object-position: center 62%; }
+  .case-media img[src*="snowzan-hero-mercedes"] { object-position: center 40%; }
+  .case:hover .case-media img { transform: scale(1.035); }
+  .case-feature .case-media { min-height: 460px; }
+  .browser-chrome {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #171613;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .browser-chrome .dot { width: 8px; height: 8px; border-radius: 50%; background: #4a4842; }
+  .browser-chrome .url {
+    margin-left: 10px;
+    font-size: 11px;
+    letter-spacing: .04em;
+    color: #9c998f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .case-media-split { display: grid; grid-template-columns: 0.86fr 1.14fr; gap: 1px; background: var(--line); }
+  .case-media-split img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .case-media-split .split-wheel { aspect-ratio: 3 / 4; object-position: center 48%; }
+  .case-media-split .split-foam { aspect-ratio: 4 / 3; object-position: center 42%; }
+
+  .case-body { padding: 40px; display: flex; flex-direction: column; }
+  .case-status {
+    display: inline-flex;
+    align-self: flex-start;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border: 1px solid var(--ink);
+    margin-bottom: 20px;
+    white-space: nowrap;
+  }
+  .case-status.live { background: var(--ink); color: var(--bg); }
+  .case-name {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+  }
+  .case-sub {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .case-desc { color: #2E2D26; max-width: 56ch; }
+  .case-features {
+    list-style: none;
+    margin-top: 22px;
+    display: grid;
+    gap: 9px;
+  }
+  .case-features li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 14.5px;
+    color: #2E2D26;
+  }
+  .case-features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 1.5px;
+    background: var(--ink);
+  }
+  .case-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 28px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 2px;
+    align-self: flex-start;
+    transition: opacity .18s, gap .18s;
+  }
+  .case-link:hover { opacity: .6; gap: 11px; }
+  .case-links { display: flex; gap: 22px; flex-wrap: wrap; }
+  .case-note {
+    font-size: 11.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* compact case (H&M, GrimeVPN) */
+  .cases-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .case-compact { display: grid; grid-template-rows: auto 1fr; }
+  .case-compact .case-media { min-height: 240px; }
+  .case-compact .case-body { padding: 32px; }
+  .case-compact .case-name { font-size: 1.4rem; }
+
+  .hm-demo {
+    position: relative;
+    min-height: 240px;
+    background: #0B0B0A;
+    overflow: hidden;
+    cursor: ew-resize;
+    touch-action: pan-y;
+    --reveal: 38%;
+  }
+  .hm-demo .hm-layer { position: absolute; inset: 0; }
+  .hm-demo .hm-dull {
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,.06) 0 2px, transparent 2px 14px),
+      linear-gradient(160deg, #1c1a17, #0B0B0A 65%);
+  }
+  .hm-demo .hm-glossy {
+    background:
+      radial-gradient(130% 160% at 25% 15%, rgba(255,255,255,.55), transparent 46%),
+      linear-gradient(160deg, #3a352c, #16130f 75%);
+    clip-path: inset(0 calc(100% - var(--reveal)) 0 0);
+  }
+  .hm-demo .hm-divider {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: var(--reveal);
+    width: 2px;
+    background: #C79A5B;
+    box-shadow: 0 0 14px rgba(199,154,91,.65);
+    transform: translateX(-1px);
+  }
+  .hm-demo .hm-copy {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 36px 28px;
+    color: #F4EFE6;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hm-demo .hm-tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #C79A5B;
+    margin-bottom: 14px;
+  }
+  .hm-demo .hm-line {
+    font-size: 1.5rem;
+    line-height: 1.28;
+    font-weight: 500;
+    max-width: 20ch;
+  }
+  .hm-demo .hm-line em { color: #E7CFA0; font-style: italic; }
+  .hm-demo .hm-hint {
+    margin-top: 16px;
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: #7c7867;
+  }
+
+  /* ---------- secondary concepts strip ---------- */
+  .concepts-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .concept-tile {
+    position: relative;
+    background: var(--card);
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .concept-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease, filter .5s ease;
+    filter: grayscale(45%);
+  }
+  .concept-tile:hover img { transform: scale(1.06); filter: grayscale(0%); }
+  .concept-tile.noise { background: repeating-linear-gradient(135deg, #E2E0D9, #E2E0D9 2px, #DAD8D0 2px, #DAD8D0 4px); }
+  .concept-tile.auto-cover {
+    background: linear-gradient(150deg, #1d1d1c 0%, #0A0A09 42%, #242422 58%, #0A0A09 100%);
+  }
+  .concept-tile.auto-cover::before {
+    content: "";
+    position: absolute;
+    inset: -20% -30%;
+    background: linear-gradient(72deg, transparent 44%, rgba(255,255,255,.12) 50%, transparent 56%);
+    transform: translateX(-35%);
+    transition: transform .7s ease;
+  }
+  .concept-tile.auto-cover:hover::before { transform: translateX(35%); }
+  .concept-info {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 12px;
+    background: linear-gradient(to top, rgba(0,0,0,.62), transparent);
+    color: #fff;
+  }
+  .concept-tile.noise .concept-info {
+    position: static;
+    background: none;
+    color: var(--ink);
+    padding: 16px;
+  }
+  .concept-name { font-weight: 700; font-size: 13.5px; }
+  .concept-desc { font-size: 11.5px; opacity: .85; margin-top: 2px; }
+  .concept-tile.noise .concept-desc { color: var(--muted); opacity: 1; }
+
+  /* ---------- capability columns (Что я умею) ---------- */
+  .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; }
+  .stack-group h3 {
+    font-size: 12px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .stack-group ul { list-style: none; }
+  .stack-group li {
+    padding: 8px 0;
+    font-size: 15.5px;
+    color: #2E2D26;
+    position: relative;
+    padding-left: 16px;
+  }
+  .stack-group li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 5px;
+    height: 1.5px;
+    background: var(--muted);
+  }
+  .stack-note {
+    margin-top: 42px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 14.5px;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  /* ---------- capacity (Что могу взять на себя) ---------- */
+  .capacity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .capacity-col { background: var(--card); padding: 26px 28px; }
+  .capacity-col h3 {
+    font-size: 12px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    padding-bottom: 12px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .capacity-col ul { list-style: none; }
+  .capacity-col li {
+    padding: 9px 0;
+    font-size: 15px;
+    border-bottom: 1px solid var(--line);
+  }
+  .capacity-col li:last-child { border-bottom: none; }
+
+  /* ---------- process ---------- */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 34px; }
+  .step-num {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 14px;
+    color: var(--muted);
+  }
+  .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+  .step p { color: #2E2D26; font-size: 15.5px; }
+
+  /* ---------- how I work ---------- */
+  .promises { list-style: none; max-width: 62ch; }
+  .promises li {
+    padding: 18px 0 18px 30px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    font-size: 16px;
+    color: #2E2D26;
+  }
+  .promises li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .promises li:first-child { border-top: 1px solid var(--line); }
+
+  /* ---------- about ---------- */
+  .about-name { font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
+  .about-role { font-size: 15px; color: var(--muted); margin-top: 8px; margin-bottom: 26px; letter-spacing: .01em; }
+  .about p { max-width: 58ch; margin-bottom: 16px; color: #2E2D26; }
+  .about-secondary { font-size: 13.5px; color: var(--muted); margin-top: 24px; }
+
+  /* ---------- contact ---------- */
+  .contact-lede { max-width: 52ch; color: #2E2D26; margin-bottom: 40px; }
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  @media (max-width: 680px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-secondary { margin-top: 18px; }
+  .contact-secondary a {
+    font-size: 12.5px;
+    letter-spacing: .05em;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+  }
+  .contact-secondary a:hover { color: var(--ink); border-color: var(--ink); }
+  .contact-item { background: var(--card); padding: 26px; transition: background .18s; }
+  .contact-item:hover { background: var(--ink); }
+  .contact-item:hover .label { color: #a8a79f; }
+  .contact-item:hover a { color: var(--bg); }
+  .contact-item .label {
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 9px;
+    transition: color .18s;
+  }
+  .contact-item a { color: var(--ink); text-decoration: none; font-weight: 700; font-size: 1.1rem; word-break: break-word; transition: color .18s; }
+
+  footer {
+    padding: 40px 0 56px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .case-feature { grid-template-columns: 1fr; }
+    .case-feature .case-media { min-height: 300px; }
+    .cases-pair { grid-template-columns: 1fr; }
+    .concepts-strip { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 680px) {
+    .wrap { padding: 0 20px; }
+    nav { position: fixed; inset: 66px 0 auto 0; background: var(--bg); border-bottom: 1px solid var(--line); flex-direction: column; align-items: flex-start; gap: 0; padding: 8px 20px 18px; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+    nav.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    nav a { padding: 12px 0; width: 100%; border-bottom: 1px solid var(--line); }
+    nav a:last-child { border-bottom: none; }
+    .nav-cta { border: none; padding: 12px 0; }
+    .nav-toggle { display: block; }
+    .hero { padding: 56px 0 48px; }
+    section { padding: 60px 0; }
+    .case-body { padding: 26px; }
+    .case-media-split { grid-template-columns: 1fr; }
+    .case-media-split .split-wheel, .case-media-split .split-foam { aspect-ratio: 4 / 3; }
+    .concepts-strip { grid-template-columns: repeat(2, 1fr); }
+    .capacity-grid, .stack { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-row">
+    <a class="brand" href="#top">Matras0v.</a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">Меню</button>
+    <nav id="siteNav">
+      <a href="#works">Работы</a>
+      <a href="#skills">Умею</a>
+      <a href="#process">Процесс</a>
+      <a href="#about">Обо мне</a>
+      <a class="nav-cta" href="#contact">Связаться</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap" id="top">
+
+  <div class="hero">
+    <div class="hero-eyebrow reveal in">Открыт для проектов · Ростов-на-Дону</div>
+    <h1 class="reveal in">Проектирую и собираю сайты, которыми удобно пользоваться и не стыдно продавать.</h1>
+    <p class="lede reveal in">Лендинги, сайты компаний, каталоги, интернет-магазины, интерфейсы и небольшие digital-продукты — от структуры и дизайна до рабочей версии в браузере.</p>
+    <div class="hero-actions reveal in">
+      <a class="btn btn-solid" href="#works">Смотреть работы</a>
+      <a class="btn btn-outline" href="#contact">Связаться</a>
+    </div>
+    <div class="meta">Ростов-на-Дону · удалённо · проекты в России, США и ОАЭ</div>
+  </div>
+
+  <section id="works">
+    <div class="kicker reveal">01 — Работы</div>
+    <h2 class="reveal">Что можно открыть и покликать</h2>
+    <p class="section-intro reveal">Здесь отдельно отмечено, где реальный клиентский проект, где собственный продукт, а где демонстрационный концепт. Никаких выдуманных заказчиков. Часть проектов сделана для англоязычной аудитории (США, ОАЭ) — сами сайты по ссылкам будут на английском, но каждый кейс на этой странице объяснён по-русски.</p>
+
+    <div class="cases">
+
+      <div class="case case-feature reveal">
+        <div class="case-media">
+          <div class="browser-chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url">snowzan-preview.netlify.app</span>
+          </div>
+          <img src="assets/snowzan-hero-mercedes.jpg" alt="Snowzan — чёрный Mercedes клиента, фото с настоящего сайта" loading="eager" width="1200" height="1340">
+        </div>
+        <div class="case-body">
+          <span class="case-status live">Клиентский проект</span>
+          <div class="case-name">Snowzan</div>
+          <div class="case-sub">Выездной детейлинг · Финикс, США</div>
+          <p class="case-desc">Мобильный детейлинг с калькулятором цены под тип кузова и записью в WhatsApp в один тап. Весь контент — реальные фото бизнеса, а не стоковые. Сдан за два дня, сейчас переносится на домен клиента.</p>
+          <ul class="case-features">
+            <li>Калькулятор стоимости по типу кузова и пакету услуг</li>
+            <li>Запись через WhatsApp с уже готовым текстом сообщения</li>
+            <li>Полностью на собственных фото клиента, без стоков</li>
+            <li>Mobile-first — большая часть трафика с телефона</li>
+          </ul>
+          <a class="case-link" href="https://snowzan-preview.netlify.app" target="_blank" rel="noopener">Открыть сайт →</a>
+          <div class="case-note">Оригинальный сайт клиента · английский язык</div>
+        </div>
+      </div>
+
+      <div class="case-media-split reveal">
+        <img class="split-wheel" src="assets/snowzan-work-wheel.jpg" alt="Snowzan — деталь: полировка колесного диска" loading="lazy" width="900" height="1200">
+        <img class="split-foam" src="assets/snowzan-about-foam.jpg" alt="Snowzan — деталь: нанесение пены на кузов" loading="lazy" width="1000" height="1000">
+      </div>
+
+      <div class="case reveal">
+        <div class="case-feature case-feature-reverse">
+          <div class="case-body">
+            <span class="case-status">Концепт</span>
+            <div class="case-name">MotoRefine</div>
+            <div class="case-sub">PPF, керамика, тонировка · Дубай, ОАЭ</div>
+            <p class="case-desc">Концепт главной страницы студии детейлинга премиум-класса. Сертификации STEK и Gtechniq на видном месте, у каждой услуги — кнопка WhatsApp с уже подставленным текстом под конкретный запрос, чтобы человек не сочинял сообщение сам.</p>
+            <ul class="case-features">
+              <li>Editorial dark-интерфейс под премиальную аудиторию</li>
+              <li>Готовые WhatsApp-сообщения под каждую услугу отдельно</li>
+              <li>Структура: PPF, керамика, тонировка, детейлинг, студия</li>
+              <li>Реальные фото студии и автомобилей клиентов</li>
+            </ul>
+            <a class="case-link" href="https://matras0v.github.io/motorefine/" target="_blank" rel="noopener">Открыть концепт →</a>
+          </div>
+          <div class="case-media">
+            <div class="browser-chrome">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="url">matras0v.github.io/motorefine</span>
+            </div>
+            <img src="assets/motorefine-hero.webp" alt="Главный экран сайта MotoRefine — студия с двумя суперкарами" loading="lazy" width="1920" height="1282">
+          </div>
+        </div>
+      </div>
+
+      <div class="cases-pair">
+
+        <div class="case case-compact reveal">
+          <div class="hm-demo" id="hmDemo">
+            <div class="hm-layer hm-dull"></div>
+            <div class="hm-layer hm-glossy"></div>
+            <div class="hm-divider"></div>
+            <div class="hm-copy">
+              <div class="hm-tag">Al Quoz Industrial 3 — Dubai</div>
+              <div class="hm-line">Разводы уходят <em>здесь</em>, а не где-то ещё.</div>
+              <div class="hm-hint">Двигайте курсором или пальцем по панели</div>
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="case-status">Собственный концепт</span>
+            <div class="case-name">H&amp;M Car Polishing</div>
+            <div class="case-sub">Полировка и детейлинг · собственная работа</div>
+            <p class="case-desc">Не заказчик — моя собственная работа, так и подписано. Результат полировки нельзя честно показать фотографией, поэтому на сайте интерактивная демонстрация вместо галереи «до/после»: водишь пальцем по затёртой панели, и под ним поднимается блеск. Панель выше — та же идея прямо здесь.</p>
+            <a class="case-link" href="https://matras0v.github.io/work/hm-polishing/#demo" target="_blank" rel="noopener">Смотреть демо →</a>
+          </div>
+        </div>
+
+        <div class="case case-compact reveal">
+          <div class="case-media">
+            <img src="assets/grimevpn-banner.jpg" alt="GrimeVPN — рекламный баннер бота на русском языке" loading="lazy" width="1680" height="945">
+          </div>
+          <div class="case-body">
+            <span class="case-status">Собственный продукт</span>
+            <div class="case-name">GrimeVPN</div>
+            <div class="case-sub">Телеграм-бот · подписки и ключи · на русском языке</div>
+            <p class="case-desc">Бот с подписками, выдачей ключей под устройства и приёмом оплаты. Весь продукт — интерфейс, тексты, маркетинг — на русском языке. Собран с нуля и работает для реальных пользователей: показывает, что кроме вёрстки умею автоматизацию и интеграции.</p>
+            <a class="case-link" href="https://t.me/GrimeVPNbot" target="_blank" rel="noopener">Открыть бота →</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker reveal">02 — Другие концепты</div>
+    <h2 class="reveal">Как это может выглядеть в разных нишах</h2>
+    <p class="section-intro reveal">Это не выдуманные заказчики. Ниже — самостоятельные демонстрационные концепты, через которые показываю дизайн и структуру сайтов под разные типы бизнеса и задач.</p>
+    <div class="concepts-strip reveal">
+      <a class="concept-tile auto-cover" href="https://matras0v.github.io/work/lustre/" target="_blank" rel="noopener">
+        <div class="concept-info">
+          <div class="concept-name">LUSTRE</div>
+          <div class="concept-desc">Автодетейлинг · сайт услуг, запись, пакеты</div>
+        </div>
+      </a>
+      <a class="concept-tile" href="https://matras0v.github.io/work/lumen/" target="_blank" rel="noopener">
+        <img src="assets/lumen.jpg" alt="Lumen — концепт сайта клиники" loading="eager" width="1600" height="1066">
+        <div class="concept-info"><div class="concept-name">Lumen</div><div class="concept-desc">Клиника · прайс, запись на приём</div></div>
+      </a>
+      <a class="concept-tile" href="https://matras0v.github.io/work/aurelis/" target="_blank" rel="noopener">
+        <img src="assets/aurelis.jpg" alt="Aurelis — концепт сайта недвижимости" loading="eager" width="800" height="533">
+        <div class="concept-info"><div class="concept-name">Aurelis</div><div class="concept-desc">Недвижимость · каталог объектов, заявка</div></div>
+      </a>
+      <a class="concept-tile" href="https://matras0v.github.io/work/lucienne/" target="_blank" rel="noopener">
+        <img src="assets/lucienne.jpg" alt="Lucienne — концепт сайта одежды" loading="eager" width="466" height="700">
+        <div class="concept-info"><div class="concept-name">Lucienne</div><div class="concept-desc">Одежда · каталог, интернет-магазин</div></div>
+      </a>
+      <a class="concept-tile" href="https://matras0v.github.io/work/ember-oak/" target="_blank" rel="noopener">
+        <img src="assets/ember-oak.jpg" alt="Ember & Oak — концепт сайта ресторана" loading="eager" width="1200" height="800">
+        <div class="concept-info"><div class="concept-name">Ember &amp; Oak</div><div class="concept-desc">Ресторан · меню, бронирование</div></div>
+      </a>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="kicker reveal">03 — Что я умею</div>
+    <h2 class="reveal">Зона ответственности</h2>
+    <p class="section-intro reveal">Структура, дизайн, разработка и подготовка контента — делаю сам, от макета до рабочей версии в браузере.</p>
+
+    <div class="stack reveal">
+      <div class="stack-group">
+        <h3>Design</h3>
+        <ul>
+          <li>Структура страницы и visual hierarchy</li>
+          <li>Responsive web design</li>
+          <li>UI и типографика</li>
+          <li>Conversion-focused layouts</li>
+          <li>Работа с реальным контентом и брендом</li>
+        </ul>
+      </div>
+      <div class="stack-group">
+        <h3>Development</h3>
+        <ul>
+          <li>HTML, CSS, JavaScript</li>
+          <li>Responsive-вёрстка</li>
+          <li>Интерактивный UI, формы и CTA-флоу</li>
+          <li>Интернет-магазины / e-commerce вёрстка</li>
+          <li>Deployment</li>
+          <li>Git / GitHub, работа с существующим кодом</li>
+        </ul>
+      </div>
+      <div class="stack-group">
+        <h3>Content / Digital</h3>
+        <ul>
+          <li>Подготовка и обработка фото</li>
+          <li>Базовый motion</li>
+          <li>Монтаж коротких вертикальных видео</li>
+          <li>AI-assisted production workflow</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="stack-note reveal">Делаю сайты и интернет-магазины как на русском, так и на английском языке — под аудиторию конкретного бизнеса. В работе использую Claude Code, ChatGPT / Codex, Photoshop, Gemini и другие инструменты — выбираю стек под конкретную задачу.</p>
+  </section>
+
+  <section>
+    <div class="kicker reveal">04 — Зона подключения</div>
+    <h2 class="reveal">Что я могу взять на себя</h2>
+    <p class="section-intro reveal">Умею не только делать сайт с нуля, но и встраиваться в уже существующую задачу команды.</p>
+
+    <div class="capacity-grid reveal">
+      <div class="capacity-col">
+        <h3>Сайты</h3>
+        <ul>
+          <li>Лендинг / сайт услуг</li>
+          <li>Многостраничный сайт</li>
+          <li>Каталог товаров, услуг или объектов</li>
+          <li>Интернет-магазин</li>
+        </ul>
+      </div>
+      <div class="capacity-col">
+        <h3>Интерактив</h3>
+        <ul>
+          <li>Калькуляторы стоимости</li>
+          <li>Квизы и формы</li>
+          <li>Фильтры и поиск</li>
+          <li>Интерактивные демонстрации</li>
+        </ul>
+      </div>
+      <div class="capacity-col">
+        <h3>Автоматизация</h3>
+        <ul>
+          <li>Telegram-боты</li>
+          <li>Интеграция Telegram / WhatsApp</li>
+          <li>Приём заявок</li>
+          <li>Автоматизированные пользовательские сценарии</li>
+        </ul>
+      </div>
+      <div class="capacity-col">
+        <h3>Редизайн</h3>
+        <ul>
+          <li>Обновление старого сайта</li>
+          <li>Адаптация под телефон</li>
+          <li>Улучшение UI</li>
+          <li>Frontend по готовому дизайну</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="kicker reveal">05 — Процесс</div>
+    <h2 class="reveal">Как это работает</h2>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Задача</h3>
+        <p>Получаю вводные, ограничения, существующий бренд, дизайн или код — от заказчика или от команды, к которой подключаюсь.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Работа</h3>
+        <p>Структура → дизайн → разработка → адаптив → проверка. Для отдельных лендингов ориентир — два дня, для встраивания в проект сроки зависят от задачи.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Передача</h3>
+        <p>Готовый код, assets, deployment и понятная структура проекта — без конструктора и без зависимости от меня.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker reveal">06 — Как работаю</div>
+    <h2 class="reveal">Принципы в работе</h2>
+    <ul class="promises reveal">
+      <li>Работаю с реальным контентом, а не lorem ipsum.</li>
+      <li>Не привязываю к конструктору сайтов — код и файлы передаются владельцу.</li>
+      <li>Сначала делаю понятную рабочую версию, затем полирую детали.</li>
+      <li>Не добавляю функции ради функций.</li>
+      <li>Проверяю desktop и mobile перед сдачей.</li>
+      <li>Правки в согласованном объёме входят в работу.</li>
+    </ul>
+  </section>
+
+  <section id="about" class="about">
+    <div class="kicker reveal">07 — О себе</div>
+    <h2 class="about-name reveal">Вадим Иванченко</h2>
+    <p class="about-role reveal">Веб-дизайнер / frontend-разработчик</p>
+    <p class="reveal">Проектирую интерфейсы и довожу их до работающей версии сам — от структуры страницы до адаптива и деплоя.</p>
+    <p class="reveal">Работаю удалённо. Есть опыт проектов, ориентированных на аудиторию России, США и ОАЭ.</p>
+    <p class="about-secondary reveal">Ростов-на-Дону · работаю удалённо.</p>
+  </section>
+
+  <section id="contact">
+    <div class="kicker reveal">08 — Связаться</div>
+    <h2 class="reveal">Есть задача или хотите обсудить работу вместе?</h2>
+    <p class="contact-lede reveal">Можно прислать сайт, макет, описание задачи или просто ссылку на проект — отвечу, чем могу быть полезен.</p>
+    <div class="contact-grid reveal">
+      <div class="contact-item">
+        <div class="label">Telegram</div>
+        <a href="https://t.me/matras0v" target="_blank" rel="noopener">Написать в Telegram</a>
+      </div>
+      <div class="contact-item">
+        <div class="label">WhatsApp</div>
+        <a href="https://wa.me/79184134820" target="_blank" rel="noopener">Написать в WhatsApp</a>
+      </div>
+      <div class="contact-item">
+        <div class="label">Почта</div>
+        <a href="mailto:mskvvmskvv@gmail.com">mskvvmskvv@gmail.com</a>
+      </div>
+    </div>
+    <div class="contact-secondary reveal">
+      <a href="https://matras0v.github.io/" target="_blank" rel="noopener">English version →</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap head-row" style="width:100%">
+    <span>Matras0v. — web design &amp; frontend development</span>
+    <span>Ростов-на-Дону · удалённо</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var toggle = document.getElementById('navToggle');
+    var nav = document.getElementById('siteNav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function () {
+        var open = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    var hmDemo = document.getElementById('hmDemo');
+    if (hmDemo) {
+      var setReveal = function (clientX) {
+        var rect = hmDemo.getBoundingClientRect();
+        var pct = ((clientX - rect.left) / rect.width) * 100;
+        pct = Math.max(4, Math.min(96, pct));
+        hmDemo.style.setProperty('--reveal', pct + '%');
+      };
+      hmDemo.addEventListener('mousemove', function (e) { setReveal(e.clientX); });
+      hmDemo.addEventListener('mouseleave', function () { hmDemo.style.setProperty('--reveal', '38%'); });
+      hmDemo.addEventListener('touchmove', function (e) {
+        if (e.touches && e.touches[0]) setReveal(e.touches[0].clientX);
+      }, { passive: true });
+    }
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items = document.querySelectorAll('.reveal:not(.in)');
+    if (reduced || !('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(function (el) { io.observe(el); });
+
+    // Safety net: guarantee nothing stays permanently invisible if a fast
+    // scroll or browser quirk causes the observer to miss an element.
+    setTimeout(function () {
+      document.querySelectorAll('.reveal:not(.in)').forEach(function (el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 800) el.classList.add('in');
+      });
+    }, 1200);
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { el.classList.add('in'); });
+      }, 3000);
+    });
+  })();
+</script>
+
+</body>
+</html>
