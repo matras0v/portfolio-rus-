@@ -210,30 +210,40 @@
 
   /* ---------- scroll story ---------- */
   .story { position: relative; }
-  .story-grid { display: grid; grid-template-columns: .95fr 1.3fr; gap: 60px; }
-  .story-sticky { position: sticky; top: 120px; align-self: start; height: fit-content; }
-  .story-sticky .eyebrow { margin-bottom: 26px; }
+  .story-grid { display: grid; grid-template-columns: .62fr 1fr; gap: 56px; align-items: center; }
+  .story-sticky { position: sticky; top: 50%; transform: translateY(-50%); align-self: start; height: fit-content; }
+  .story-sticky .eyebrow { margin-bottom: 22px; }
+  .story-progress { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--stone); margin-bottom: 18px; }
+  .story-progress b { color: var(--champagne); font-weight: 500; }
   .story-line {
     font-family: var(--serif);
-    font-size: clamp(1.7rem, 3vw, 2.5rem);
-    line-height: 1.22;
-    max-width: 14ch;
-    min-height: 3.6em;
+    font-size: clamp(2.1rem, 4vw, 3.2rem);
+    line-height: 1.16;
+    max-width: 13ch;
+    min-height: 3.4em;
     white-space: pre-line;
+    transition: opacity .6s ease, transform .6s ease;
   }
   .story-visual {
     position: sticky;
-    top: 120px;
-    height: 620px;
+    top: 6vh;
+    height: 88vh;
     overflow: hidden;
     background: #0d0d0b;
+  }
+  .story-visual::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,.28) 0%, transparent 22%, transparent 65%, rgba(0,0,0,.55) 100%);
+    pointer-events: none;
   }
   .story-visual img {
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
     opacity: 0;
-    transform: scale(1.05);
-    transition: opacity 1s cubic-bezier(.2,.7,.3,1), transform 1.4s cubic-bezier(.2,.7,.3,1);
+    transform: scale(1.09);
+    transition: opacity 1.1s cubic-bezier(.2,.7,.3,1), transform 1.8s cubic-bezier(.2,.7,.3,1);
+    will-change: transform;
   }
   .story-visual img.active { opacity: 1; transform: scale(1); }
   .story-triggers { display: flex; flex-direction: column; gap: 40vh; padding-top: 10vh; padding-bottom: 10vh; }
@@ -417,7 +427,6 @@
     .story-stacked .story-visual { position: relative; height: 340px; }
     .story-stacked .story-visual img { position: static; width: 100%; height: 100%; object-fit: cover; opacity: 1; transform: none; transition: none; }
     .story-stacked .story-line { font-family: var(--serif); font-size: clamp(1.5rem, 5vw, 2rem); line-height: 1.24; margin-top: 22px; }
-    .story-visual { height: 420px; }
     .gallery-grid { grid-template-columns: 1fr 1fr; }
   }
 
@@ -430,7 +439,7 @@
     section { padding: 100px 0 76px; }
     .story-sticky { padding-top: 8px; }
     .story-triggers { gap: 30vh; }
-    .story-visual { height: 340px; }
+    .story-stacked .story-visual { height: 300px; }
     .gallery-grid { grid-template-columns: 1fr; }
     .gallery-grid .g-large { grid-row: span 1; }
     .booking-box { padding: 28px; }
@@ -478,6 +487,7 @@
     </div>
     <div class="story-grid">
       <div class="story-sticky">
+        <div class="story-progress"><b id="storyProgressNum">01</b> / 03</div>
         <div class="story-line" id="storyLine">Сначала атмосфера.
 Потом первый курс.</div>
       </div>
@@ -561,15 +571,15 @@
       <div class="booking-group">
         <span class="glabel">Время</span>
         <div class="pill-row" data-group="time">
+          <button class="pill" data-value="12:00">12:00</button>
+          <button class="pill" data-value="13:30">13:30</button>
+          <button class="pill" data-value="15:00">15:00</button>
+          <button class="pill" data-value="16:30">16:30</button>
           <button class="pill" data-value="18:00">18:00</button>
-          <button class="pill" data-value="18:30">18:30</button>
-          <button class="pill" data-value="19:00">19:00</button>
           <button class="pill" data-value="19:30">19:30</button>
-          <button class="pill" data-value="20:00">20:00</button>
-          <button class="pill" data-value="20:30">20:30</button>
           <button class="pill" data-value="21:00">21:00</button>
-          <button class="pill" data-value="21:30">21:30</button>
-          <button class="pill" data-value="22:00">22:00</button>
+          <button class="pill" data-value="22:30">22:30</button>
+          <button class="pill" data-value="23:30">23:30</button>
         </div>
       </div>
       <div class="booking-group">
@@ -672,8 +682,10 @@
   // scroll story
   var storyImgs = document.querySelectorAll('.story-img');
   var storyLine = document.getElementById('storyLine');
+  var storyProgressNum = document.getElementById('storyProgressNum');
   var triggers = Array.from(document.querySelectorAll('.story-trigger'));
   var currentStoryState = '1';
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function applyStoryState(target) {
     var state = target.getAttribute('data-state');
     if (state === currentStoryState) return;
@@ -681,7 +693,18 @@
     storyImgs.forEach(function (img) {
       img.classList.toggle('active', img.getAttribute('data-state') === state);
     });
-    storyLine.textContent = target.getAttribute('data-line');
+    if (storyProgressNum) storyProgressNum.textContent = '0' + state;
+    if (reducedMotion) {
+      storyLine.textContent = target.getAttribute('data-line');
+    } else {
+      storyLine.style.opacity = '0';
+      storyLine.style.transform = 'translateY(10px)';
+      setTimeout(function () {
+        storyLine.textContent = target.getAttribute('data-line');
+        storyLine.style.opacity = '1';
+        storyLine.style.transform = 'translateY(0)';
+      }, 220);
+    }
   }
   if (triggers.length) {
     // Primary: scroll-position based (robust across browsers/automation).
