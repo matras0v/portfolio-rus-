@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ember &amp; Oak — современный ресторан, Москва (концепт)</title>
+<meta name="description" content="Самостоятельный концепт: премиальный ресторан в Москве. Editorial storytelling, сезонное меню, demo-бронирование и переход в Telegram.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23171714'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='54' font-weight='700' fill='%23F0ECE3' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #171714;
+    --bone: #F0ECE3;
+    --burgundy: #6D1F1B;
+    --stone: #8D836E;
+    --champagne: #D7CBB6;
+    --line: rgba(240,236,227,.16);
+    --serif: "Instrument Serif", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  body {
+    background: var(--black);
+    color: var(--bone);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--champagne); outline-offset: 3px; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .9s cubic-bezier(.2,.7,.3,1), transform .9s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-mask { position: relative; overflow: hidden; }
+  .reveal-mask::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: var(--black);
+    transform-origin: left;
+    transition: transform 1s cubic-bezier(.65,0,.15,1);
+  }
+  .reveal-mask.in::after { transform: scaleX(0); }
+
+  /* ---------- header ---------- */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 26px 0;
+    transition: padding .35s ease, background .35s ease, border-color .35s ease;
+    border-bottom: 1px solid transparent;
+  }
+  header.compact {
+    padding: 14px 0;
+    background: rgba(23,23,20,.86);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom-color: var(--line);
+  }
+  .head-row { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
+  .brand { font-family: var(--serif); font-size: 21px; letter-spacing: .02em; text-decoration: none; color: var(--bone); }
+  nav { display: flex; align-items: center; gap: 30px; }
+  nav a.navlink {
+    color: var(--champagne);
+    text-decoration: none;
+    font-size: 12.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: opacity .18s;
+    opacity: .78;
+  }
+  nav a.navlink:hover, nav a.navlink:focus-visible { opacity: 1; }
+  .nav-cta {
+    border: 1px solid var(--champagne);
+    padding: 9px 18px;
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--bone) !important;
+    transition: background .2s, color .2s;
+  }
+  .nav-cta:hover { background: var(--champagne); color: var(--black) !important; }
+  .nav-toggle {
+    display: none;
+    -webkit-appearance: none; appearance: none;
+    background: none;
+    color: var(--bone);
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    font-size: 12px;
+    font-family: inherit;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+  .hero-media { position: absolute; inset: 0; z-index: 0; }
+  .hero-media img {
+    width: 100%; height: 100%; object-fit: cover;
+    transform: scale(1.08);
+    animation: heroZoom 14s ease-out forwards;
+  }
+  @keyframes heroZoom { to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .hero-media img { animation: none; transform: scale(1); } }
+  .hero-media::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(23,23,20,.35) 0%, rgba(23,23,20,.15) 35%, rgba(23,23,20,.92) 100%);
+  }
+  .hero-inner { position: relative; z-index: 1; width: 100%; padding: 0 0 90px; }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(3.4rem, 10vw, 8rem);
+    line-height: .96;
+    letter-spacing: -.01em;
+    max-width: 16ch;
+    margin-top: 22px;
+  }
+  .hero-sub {
+    margin-top: 26px;
+    max-width: 42ch;
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    color: var(--champagne);
+    line-height: 1.55;
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 40px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 15px 28px;
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--bone);
+    transition: background .2s, color .2s, transform .2s;
+  }
+  .btn-solid { background: var(--bone); color: var(--black); }
+  .btn-solid:hover { transform: translateY(-2px); }
+  .btn-outline { color: var(--bone); }
+  .btn-outline:hover { background: var(--bone); color: var(--black); }
+  .tg-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--champagne);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: .04em;
+    border-bottom: 1px solid rgba(215,203,182,.4);
+    padding-bottom: 2px;
+    transition: color .18s, border-color .18s;
+  }
+  .tg-link:hover { color: var(--bone); border-color: var(--bone); }
+  .scroll-hint {
+    position: absolute;
+    right: 32px; bottom: 34px;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    writing-mode: vertical-rl;
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 120px 0; border-top: 1px solid var(--line); }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+    line-height: 1.06;
+    letter-spacing: -.01em;
+  }
+  .section-head { margin-bottom: 64px; }
+  .section-head .eyebrow { margin-bottom: 18px; }
+  .section-lede { margin-top: 20px; max-width: 46ch; color: var(--champagne); font-size: 1.02rem; }
+
+  /* ---------- scroll story ---------- */
+  .story { position: relative; }
+  .story-grid { display: grid; grid-template-columns: .95fr 1.3fr; gap: 60px; }
+  .story-sticky { position: sticky; top: 120px; align-self: start; height: fit-content; }
+  .story-sticky .eyebrow { margin-bottom: 26px; }
+  .story-line {
+    font-family: var(--serif);
+    font-size: clamp(1.7rem, 3vw, 2.5rem);
+    line-height: 1.22;
+    max-width: 14ch;
+    min-height: 3.6em;
+    white-space: pre-line;
+  }
+  .story-visual {
+    position: relative;
+    height: 620px;
+    overflow: hidden;
+    background: #0d0d0b;
+  }
+  .story-visual img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 1s cubic-bezier(.2,.7,.3,1), transform 1.4s cubic-bezier(.2,.7,.3,1);
+  }
+  .story-visual img.active { opacity: 1; transform: scale(1); }
+  .story-triggers { display: flex; flex-direction: column; gap: 40vh; padding-top: 10vh; padding-bottom: 10vh; }
+  .story-trigger { height: 1px; }
+
+  /* ---------- menu ---------- */
+  .menu-list { list-style: none; border-top: 1px solid var(--line); max-width: 62ch; }
+  .menu-list li {
+    display: flex;
+    gap: 26px;
+    align-items: baseline;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .menu-list .num { font-family: var(--mono); font-size: 12px; color: var(--stone); flex: none; width: 2.4ch; }
+  .menu-list .dish { font-family: var(--serif); font-size: clamp(1.15rem, 2vw, 1.5rem); }
+  .menu-price {
+    margin-top: 44px;
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .menu-price .amount { font-family: var(--serif); font-size: 2.1rem; color: var(--champagne); }
+  .menu-price .label { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--stone); }
+  .menu-note {
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--stone);
+    max-width: 52ch;
+  }
+
+  /* ---------- booking ---------- */
+  .booking-box {
+    background: rgba(240,236,227,.04);
+    border: 1px solid var(--line);
+    padding: 48px;
+  }
+  .booking-group { margin-bottom: 30px; }
+  .booking-group:last-of-type { margin-bottom: 0; }
+  .booking-group .glabel {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 14px;
+    display: block;
+  }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill {
+    -webkit-appearance: none; appearance: none;
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--line);
+    padding: 11px 20px;
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .18s, border-color .18s, color .18s;
+  }
+  .pill:hover { border-color: var(--champagne); }
+  .pill.active { background: var(--champagne); border-color: var(--champagne); color: var(--black); }
+  .booking-summary {
+    margin-top: 36px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+  }
+  .booking-summary .result {
+    font-family: var(--serif);
+    font-size: 1.55rem;
+    color: var(--champagne);
+    min-height: 1.4em;
+  }
+  .booking-summary .booking-note { margin-top: 18px; font-size: 12.5px; color: var(--stone); max-width: 46ch; }
+  .booking-summary .tg-link { margin-top: 22px; }
+
+  /* ---------- gallery ---------- */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 18px;
+  }
+  .gallery-grid .g-large { grid-row: span 2; }
+  .gallery-grid figure { overflow: hidden; margin: 0; }
+  .gallery-grid img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s cubic-bezier(.2,.7,.3,1);
+  }
+  .gallery-grid figure:hover img { transform: scale(1.02); }
+  .gallery-full { margin-top: 18px; overflow: hidden; }
+  .gallery-full img { width: 100%; max-height: 560px; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.3,1); }
+  .gallery-full:hover img { transform: scale(1.015); }
+
+  /* ---------- footer / cta ---------- */
+  .final-cta { text-align: left; }
+  .final-cta h2 { max-width: 14ch; }
+  .final-actions { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; margin-top: 40px; }
+
+  footer {
+    padding: 40px 0 56px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  footer a { text-decoration: none; color: var(--stone); transition: color .18s; }
+  footer a:hover { color: var(--bone); }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid var(--stone);
+    color: var(--champagne);
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .story-grid { grid-template-columns: 1fr; }
+    .story-sticky { position: static; margin-bottom: 32px; }
+    .story-visual { height: 420px; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 680px) {
+    .wrap { padding: 0 20px; }
+    nav.navlinks { position: fixed; inset: 60px 0 auto 0; background: var(--black); border-bottom: 1px solid var(--line); flex-direction: column; align-items: flex-start; gap: 0; padding: 6px 20px 16px; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+    nav.navlinks.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    nav.navlinks a.navlink { padding: 14px 0; width: 100%; border-bottom: 1px solid var(--line); opacity: 1; }
+    .nav-toggle { display: block; }
+    section { padding: 100px 0 76px; }
+    .story-sticky { padding-top: 8px; }
+    .story-triggers { gap: 30vh; }
+    .story-visual { height: 340px; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-grid .g-large { grid-row: span 1; }
+    .booking-box { padding: 28px; }
+    .menu-list li { gap: 16px; }
+    footer { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="wrap head-row">
+    <a class="brand" href="#top">Ember &amp; Oak</a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">Меню</button>
+    <nav class="navlinks" id="navLinks">
+      <a class="navlink" href="#menu">Меню</a>
+      <a class="navlink" href="#story">История</a>
+      <a class="navlink" href="#booking">Бронирование</a>
+      <a class="navlink nav-cta" href="#booking">Стол ↗</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-media">
+    <img src="img/room.jpg" alt="Зал ресторана Ember & Oak в тёплом вечернем свете" width="1200" height="800">
+  </div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow reveal in">Moscow · Chef's Table · Evening Only</div>
+    <h1 class="reveal in">Вечер начинается<br>не с меню.</h1>
+    <p class="hero-sub reveal in">Современная кухня, сезонный сет и столы, которые лучше выбирать заранее.</p>
+    <div class="hero-actions reveal in">
+      <a class="btn btn-solid" href="#menu">Смотреть меню</a>
+      <a class="btn btn-outline" href="#booking">Забронировать стол</a>
+      <a class="tg-link" href="https://t.me/matras0v" target="_blank" rel="noopener">Написать в Telegram ↗</a>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<section class="story" id="story">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">01 / Вечер</div>
+    </div>
+    <div class="story-grid">
+      <div class="story-sticky">
+        <div class="story-line" id="storyLine">Сначала атмосфера.
+Потом первый курс.</div>
+      </div>
+      <div>
+        <div class="story-visual">
+          <img class="story-img active" data-state="1" src="img/room.jpg" alt="Атмосфера зала" width="1200" height="800">
+          <img class="story-img" data-state="2" src="img/pour.jpg" alt="Блюдо крупным планом" width="1200" height="1200">
+          <img class="story-img" data-state="3" src="img/glass.jpg" alt="Стол, вино, вечер" width="900" height="1200">
+        </div>
+        <div class="story-triggers">
+          <div class="story-trigger" data-state="1" data-line="Сначала атмосфера.&#10;Потом первый курс."></div>
+          <div class="story-trigger" data-state="2" data-line="Подача — часть&#10;разговора за столом."></div>
+          <div class="story-trigger" data-state="3" data-line="Дальше — вино&#10;и время без спешки."></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">02 / Menu</div>
+      <h2>Сезонный сет</h2>
+      <p class="section-lede">Меню меняется вместе с сезоном. Ниже — сет из семи курсов на текущую неделю.</p>
+    </div>
+    <ul class="menu-list reveal">
+      <li><span class="num">01</span><span class="dish">Амюз</span></li>
+      <li><span class="num">02</span><span class="dish">Гребешок / яблоко / сельдерей</span></li>
+      <li><span class="num">03</span><span class="dish">Тартар / можжевельник / рожь</span></li>
+      <li><span class="num">04</span><span class="dish">Треска / шафран / фенхель</span></li>
+      <li><span class="num">05</span><span class="dish">Утка / свёкла / можжевельник</span></li>
+      <li><span class="num">06</span><span class="dish">Сыр / груша / мёд</span></li>
+      <li><span class="num">07</span><span class="dish">Тёмный шоколад / вишня</span></li>
+    </ul>
+    <div class="menu-price reveal">
+      <span class="amount">8 900 ₽</span>
+      <span class="label">7 Course Menu · на человека</span>
+    </div>
+    <p class="menu-note reveal">Демонстрационный концепт — позиции и цены не относятся к реальному ресторану.</p>
+  </div>
+</section>
+
+<section id="booking">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">03 / Reservation</div>
+      <h2>Выберите вечер</h2>
+      <p class="section-lede">Выберите время — детали можно уточнить в Telegram.</p>
+    </div>
+    <div class="booking-box reveal">
+      <div class="booking-group">
+        <span class="glabel">Дата</span>
+        <div class="pill-row" data-group="date">
+          <button class="pill" data-value="Сегодня">Сегодня</button>
+          <button class="pill" data-value="Завтра">Завтра</button>
+          <button class="pill" data-value="Пятница">Пт</button>
+          <button class="pill" data-value="Суббота">Сб</button>
+        </div>
+      </div>
+      <div class="booking-group">
+        <span class="glabel">Время</span>
+        <div class="pill-row" data-group="time">
+          <button class="pill" data-value="18:30">18:30</button>
+          <button class="pill" data-value="20:00">20:00</button>
+          <button class="pill" data-value="21:30">21:30</button>
+        </div>
+      </div>
+      <div class="booking-group">
+        <span class="glabel">Гости</span>
+        <div class="pill-row" data-group="guests">
+          <button class="pill" data-value="2">2</button>
+          <button class="pill" data-value="3">3</button>
+          <button class="pill" data-value="4">4</button>
+          <button class="pill" data-value="5+">5+</button>
+        </div>
+      </div>
+      <div class="booking-summary">
+        <div class="result" id="bookingResult">Выберите дату, время и число гостей</div>
+        <a class="tg-link" href="https://t.me/matras0v" target="_blank" rel="noopener" id="tgBookingLink">Продолжить в Telegram ↗</a>
+        <p class="booking-note">Демонстрационный сценарий. Бронирование не отправляется.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">04 / Gallery</div>
+      <h2>Кадры вечера</h2>
+    </div>
+    <div class="gallery-grid reveal">
+      <figure class="g-large"><img src="img/room.jpg" alt="Зал ресторана" width="1200" height="800"></figure>
+      <figure><img src="img/glass.jpg" alt="Бокалы вина на столе" width="900" height="1200"></figure>
+      <figure><img src="img/pour.jpg" alt="Подача блюда" width="1200" height="1200"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <div class="badge reveal">Самостоятельный концепт</div>
+    <h2 class="reveal">Семь курсов.<br>Один стол.<br>Никакой спешки.</h2>
+    <div class="final-actions reveal">
+      <a class="btn btn-solid" href="#booking">Забронировать стол</a>
+      <a class="tg-link" href="https://t.me/matras0v" target="_blank" rel="noopener">Уточнить стол в Telegram ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap head-row" style="width:100%">
+    <a href="../index-ru.html">← Вернуться в портфолио Matras0v</a>
+    <span>Ember &amp; Oak — самостоятельный концепт · не коммерческий заказ</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', function () {
+    header.classList.toggle('compact', window.scrollY > 40);
+  }, { passive: true });
+
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('navLinks');
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // generic reveal
+  var reveals = document.querySelectorAll('.reveal:not(.in)');
+  if (reduced || !('IntersectionObserver' in window)) {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -60px 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+
+    setTimeout(function () {
+      document.querySelectorAll('.reveal:not(.in)').forEach(function (el) {
+        if (el.getBoundingClientRect().top < window.innerHeight + 1000) el.classList.add('in');
+      });
+    }, 1200);
+  }
+
+  // scroll story
+  var storyImgs = document.querySelectorAll('.story-img');
+  var storyLine = document.getElementById('storyLine');
+  var triggers = Array.from(document.querySelectorAll('.story-trigger'));
+  var currentStoryState = '1';
+  function applyStoryState(target) {
+    var state = target.getAttribute('data-state');
+    if (state === currentStoryState) return;
+    currentStoryState = state;
+    storyImgs.forEach(function (img) {
+      img.classList.toggle('active', img.getAttribute('data-state') === state);
+    });
+    storyLine.textContent = target.getAttribute('data-line');
+  }
+  if (triggers.length) {
+    // Primary: scroll-position based (robust across browsers/automation).
+    var ticking = false;
+    function updateStoryByScroll() {
+      ticking = false;
+      var center = window.innerHeight / 2;
+      var closest = null, closestDist = Infinity;
+      triggers.forEach(function (t) {
+        var rect = t.getBoundingClientRect();
+        var dist = Math.abs(rect.top - center);
+        if (dist < closestDist) { closestDist = dist; closest = t; }
+      });
+      if (closest) applyStoryState(closest);
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(updateStoryByScroll); }
+    }, { passive: true });
+    window.addEventListener('resize', updateStoryByScroll);
+    updateStoryByScroll();
+  }
+
+  // booking demo
+  var selections = { date: null, time: null, guests: null };
+  var resultEl = document.getElementById('bookingResult');
+  document.querySelectorAll('.pill-row').forEach(function (row) {
+    var group = row.getAttribute('data-group');
+    row.querySelectorAll('.pill').forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        row.querySelectorAll('.pill').forEach(function (p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+        selections[group] = pill.getAttribute('data-value');
+        updateSummary();
+      });
+    });
+  });
+  function updateSummary() {
+    if (selections.date && selections.time && selections.guests) {
+      var guestsWord = selections.guests === '2' ? 'двоих' : selections.guests + (selections.guests === '5+' ? '' : ' человек');
+      resultEl.textContent = 'Стол на ' + guestsWord + ' · ' + selections.date.toLowerCase() + ', ' + selections.time;
+    } else {
+      var picked = [selections.date, selections.time, selections.guests].filter(Boolean).length;
+      resultEl.textContent = picked === 0 ? 'Выберите дату, время и число гостей' : 'Осталось выбрать ещё немного…';
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
